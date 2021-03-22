@@ -59,11 +59,11 @@ If I understand correctly, the `percentChange24h` field of the `Price feed` only
 ## Time breakdown
 1hr30m: Researching REST APIs in general, reading over Gemini's public API, brushing up on Python dictionaries.
 
-30m: Playing around with Gemini's APIs and printing output. Comparing Gemini's information with other info online to double check
+30m: Playing around with Gemini's APIs and printing output. Comparing Gemini's information with other info online to double check.
 
-1hr30m: Actual coding and testing. Around 30m of this alloted time was "wasted" because I believed that I wasn't using the correct API (Price feed)
+1hr30m: Actual coding and testing. Around 30m of this alloted time was "wasted" because I believed that I wasn't using the correct API (Price feed).
 
 20m: Wrinting this README, thinking about possible future improvements, adding comments to the finalized code.
 
-Total time: Around 3hr50m
+Total time: Around 3hr50m.
 
