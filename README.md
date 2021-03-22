@@ -6,13 +6,17 @@ based on user input.
 NOTE: This program was written with Python 3.9.2. Older versions might not be compatible.
 To run the program, make sure that you are in the correct directory.
 Once you're there, you can simply type
+
 ```python gemini.py [% threshold]```
+
 Where [% threshold] is percent change in price that will trigger an ERROR-specific alert.
 The program will run indefinitely until the user issues a stop command. 
 In order to stop the program, you will have to press: CTRL + C or CMD + C, depending on your Operating System. 
 
 An example run looks like:
+
 ```python gemini.py 3.5```
+
 Where the program will output ERROR messages whenever any ticker's percent price change exceeds 3.5% in either direction (+/-)
 
 ## Dependencies
