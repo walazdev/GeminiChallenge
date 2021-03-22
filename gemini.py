@@ -14,78 +14,47 @@ def main():
     print("User % change threshold:", sys.argv[1])
 
     # get tickers and sort by alphabetical order
+    print(datetime.datetime.now(), "- INFO: Retrieving tickers")
     ticker_url = "https://api.gemini.com/v1/symbols"
     response = requests.get(ticker_url)
     tickers = sorted(response.json())
 
     while True:
-        i = 0
-        while i < len(tickers):
+        for i in range (0, len(tickers)):
             # Get general information about specific ticker from list of tickers. 
             # The information that will be of use is: open price (opening price 24hr ago), ask (current best offer)
+            timestamp = datetime.datetime.now()
             specificTicker = tickers[i]
             tickerURL = "https://api.gemini.com/v2/ticker/" + specificTicker
             tickerInfo = requests.get(tickerURL).json()
+            
+            # On 3/22/2021, 7 more tickers were added, some of which had no information (or None) in certain keys
+            # The code below is to account for these new tickers without information, as the code would throw errors if no information was present
+            if tickerInfo['ask'] == None:
+                continue
+            print(timestamp, "- INFO: Fetched", specificTicker, "information")
+
             # uncomment line below to adhere to API rate limits
             # time.sleep(1.0)
-            timestamp = datetime.datetime.now()
+
+            # Retrieve and compute price information
             openPrice = float(tickerInfo['open'])
             currentPrice = float(tickerInfo['ask'])
             percentPriceChange = get24hrPriceChange(currentPrice, openPrice)
-            print(openPrice, currentPrice)
+            # Price change threshold exceeded
             if abs(percentPriceChange) > userInputFloat:
-                percentPriceChange = round(percentPriceChange, 2)
-                print("WARNING, PRICE CHANGE OVER THRESHOLD", tickerInfo['symbol'], percentPriceChange, "%")
+                print(timestamp, "- ERROR:", specificTicker, "***** PRICE CHANGE *****")
+            # Price change threshold NOT exceeded (in either direction, +/-)
             else:
-                print("all good", tickerInfo['symbol'])
-            i += 1
-        # generalInfo = "https://api.gemini.com/v1/pubticker/btcusd"
-        # openInfo = "https://api.gemini.com/v2/ticker/btcusd"
-        # response = requests.get(generalInfo)
-        # prices = response.json()
-        # # Sort prices by alphabetical order
-        # prices = sorted(prices, key = lambda i: i['pair'])
-        # item = 0
-        # # make all tickers in prices lowercase for comparing purposes later on
-        # while item < len(prices):
-        #     prices[item]['pair'] = prices[item]['pair'].lower()
-        #     item += 1
-        # # for rate limiting purposes
-        # time.sleep(1.0)
-        # response = requests.get(tickers)
-        # # sort info by alphabetical order
-        # info = sorted(response.json())
-        # # length of prices and info == 50
-        # i = 0
-        # while i < len(prices):
-        #     # print(info[i])
-        #     # print(prices[i]['pair'])
-        #     ticker = info[i]
-        #     if abs(float(prices[i]['percentChange24h'])) >= userInputFloat:
-        #         print(ticker, "% change: ", prices[i]['percentChange24h'])
-        #         print("WARNING, THRESHOLD EXCEEDED")
-        #     else:
-        #         print(ticker, "% change: :", prices[i]['percentChange24h'], "all good")
-
-        #     # if prices[i]['pair'] == 'BTCUSD':
-        #     #     print("Found BTCUSD, % change: ", prices[i]['percentChange24h'])
-        #     #     if abs(float(prices[i]['percentChange24h'])) >= userInputInt:
-        #     #         print("WARNING, THRESHOLD EXCEEDED")
-        #     #     else:
-        #     #         print("all good, threshold not exceeded")
-        #     i += 1
-        # print("next wave")
-        # #print(prices[0])
-        # # print(prices)
-        # time.sleep(1.0)
+                print(timestamp, "- INFO:", specificTicker, "has not exceeded threshold")
+            # Print general information on the ticker of interest, regardless of price change status
+            print(timestamp, "|", specificTicker, "| Current price:", currentPrice, "| Open price:", openPrice, "| % change:", round(percentPriceChange, 2))    
+            
 
 
 def get24hrPriceChange(finalPrice, startPrice):
     result = ((finalPrice - startPrice) / startPrice) * 100
     return result
-
-
-
 
 
 if __name__ == "__main__":
